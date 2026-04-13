@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 import { Option, program } from "commander";
-import "dotenv/config";
+import dotenv from "dotenv";
 import { version } from "../package.json";
-import { generateTypescriptClients, initConfigFile } from "./cli";
+import { generateTypescriptClients } from "./cli";
+
+dotenv.config({
+  path: [ ".env", ".env.local", ".env.dev", ".env.prod" ]
+})
 
 program
   .name("notion-ts-client")
@@ -20,20 +24,20 @@ const options = {
     .makeOptionMandatory(),
 
   config: new Option("--config <config>", "Path to config file")
-    .default("./notion-ts-client.config.json")
+    .default("./notion-sdk.json")
     .env("NOTION_TS_CLIENT_CONFIG_PATH"),
 
-  sdk: new Option("--sdk <sdk>", "Path to generated sdk folder")
-    .default("./notion-ts-client")
+  sdk: new Option("--sdk <sdk>", "Path to folder where the generated SDK will be saved")
+    .default("./notion-sdk")
     .env("NOTION_TS_CLIENT_SDK_PATH"),
 };
 
-program
-  .command("init")
-  .description("Initialize config file")
-  .action(initConfigFile)
-  .addOption(options.secret)
-  .addOption(options.config);
+// program
+//   .command("init")
+//   .description("Initialize config file")
+//   .action(initConfigFile)
+//   .addOption(options.secret)
+//   .addOption(options.config);
 
 program
   .command("generate")
